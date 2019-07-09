@@ -1,3 +1,5 @@
+from decimal import *
+
 def motors_client(angle, power):
     # print("Before SetEnabled")
     rospy.wait_for_service('motion_controller/SetEnabled')
@@ -38,11 +40,13 @@ def calc_desired_yaw(object_center, current_yaw, frame_width, frame_height, h_fo
     NOTE: This math might give wrong values but should give right
     or left correctly"""
 
+    getcontext().prec = 6
+
     frame_w_center = frame_width/2
     frame_h_center = frame_height/2
     pixel_displacement = object_center - frame_w_center
-    pixel_fraction = pixel_displacement/(frame_width/2)
-    degree_displacement = h_fov * pixel_fraction
+    pixel_fraction = Decimal(pixel_displacement/(frame_width/2))
+    degree_displacement = (h_fov/2) * pixel_fraction
     desired_yaw = current_yaw + degree_displacement
 
     print("----")
@@ -54,9 +58,8 @@ def calc_desired_yaw(object_center, current_yaw, frame_width, frame_height, h_fo
     print("H FOV: " + str(h_fov))
     print("Object Center: " + str(object_center))
     print("Pixel Displacement: " + str(pixel_displacement))
-    print("Pixel Frantion: " + str(pixel_fraction))
-    print("Degree Displacement" + str(degree_displacement))
-    print("Desired Yaw: " + str(desired_yaw))
+    print("Pixel Fraction: " + str(pixel_fraction))
+    print("Degree Displacement: " + str(degree_displacement))
 
     print("----")
 

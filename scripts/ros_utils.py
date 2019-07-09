@@ -37,10 +37,28 @@ def calc_desired_yaw(object_center, current_yaw, frame_width, frame_height, h_fo
     """ Based of previous "get_imuangle function. Now, the funtion returns the desired yaw as opposed to a differential.
     NOTE: This math might give wrong values but should give right
     or left correctly"""
+
     frame_w_center = frame_width/2
     frame_h_center = frame_height/2
     pixel_displacement = object_center - frame_w_center
     pixel_fraction = pixel_displacement/(frame_width/2)
     degree_displacement = h_fov * pixel_fraction
     desired_yaw = current_yaw + degree_displacement
+
+    print("----")
+    print("Calculation Values:")
+    print("Object Center: " + str(object_center))
+    print("Current Yaw: " + str(current_yaw))
+    print("Frame Width: " + str(frame_width))
+    print("Frame Height: " + str(frame_height))
+    print("H FOV: " + str(h_fov))
+    print("Object Center: " + str(object_center))
+    print("Pixel Displacement: " + str(pixel_displacement))
+    print("Pixel Frantion: " + str(pixel_fraction))
+    print("Degree Displacement" + str(degree_displacement))
+    print("Desired Yaw: " + str(desired_yaw))
+
+    print("----")
+
+
     return desired_yaw

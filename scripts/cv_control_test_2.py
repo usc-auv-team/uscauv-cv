@@ -1,9 +1,9 @@
+#!/usr/bin/env python
 """
 Test script that should be able to read the angle from the ngimu/euler node
 and use that angle to calculate how much to turn the sub. It should then
 guide the sub towards the target more easily.
 """
-#!/usr/bin/env python
 from motion_controller.srv import *
 from std_msgs.msg import String
 import rospy

@@ -16,7 +16,7 @@ import time
 # find where the geometry_msgs folder is and look for the message declaration
 from geometry_msgs.msg import Vector3, Vector3Stamped
 
-import ros_utils
+import ros_utils as ru
 
 desired_yaw = 0
 current_yaw = 0
@@ -43,11 +43,26 @@ def callback(data):
 
         object_center = (xmax+xmin)/2
         # calculate desired yaw
-        degree_displacement = calc_angle(object_center)
-        desired_yaw = calc_desired_yaw(object_center, current_yaw, frame_width, frame_height, h_fov)
+        # degree_displacement = calc_angle(object_center)
+        desired_yaw = ru.calc_desired_yaw(object_center, current_yaw, frame_width, frame_height, h_fov)
         motors_client(desired_yaw, default_power)
    except KeyboardInterrupt:
         set_disabled()
+
+def get_imuangle(data):
+    """ This is where we try to get the angle from ngimu/euler
+    The problem is that we need to test this with the sub
+    This is the cpp declaration of the message published for euler
+    typedef struct {
+        OscTimeTag timestamp;
+        float roll;
+        float pitch;
+        float yaw;
+    } NgimuEuler;
+    """
+    global current_yaw
+    current_yaw = data.vector.z
+
 
 def cv_controls_test():
     try:
@@ -90,7 +105,7 @@ def cv_controls_test():
 if __name__ == '__main__':
     try:
         # zero_yaw()
-        cv_Controls_Test()
+        cv_controls_test()
     except (KeyboardInterrupt, SystemExit):
         print("Exiting")
         set_disabled()

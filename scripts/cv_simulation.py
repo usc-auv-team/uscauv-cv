@@ -28,15 +28,15 @@ def simulation():
     # Not sure if I need seq_if but if I do, I want to be 42
     seq_id = 42
 
-    xmin = 100
-    xmax = 150
+    xmin = 200
+    xmax = 300
     ymin = 20
     ymax = 50
-
-    while(True):
-
-        sent_str = "{" + "\"xmin\":" + str(xmin) + ", \"xmax\":" + str(xmax) + ", \"ymin\":" + str(ymin) + ", \"ymax\":" + str(ymax) + "}"
-        pub.publish(sent_str);
-
+    try:
+        while(True):
+            sent_str = "{" + "\"xmin\":" + str(xmin) + ", \"xmax\":" + str(xmax) + ", \"ymin\":" + str(ymin) + ", \"ymax\":" + str(ymax) + "}"
+            pub.publish(sent_str);
+    except KeyboardInterrupt:
+        print("Exiting")
 if __name__=='__main__':
     simulation()

@@ -45,7 +45,7 @@ def calc_desired_yaw(object_center, current_yaw, frame_width, frame_height, h_fo
     frame_w_center = frame_width/2
     frame_h_center = frame_height/2
     pixel_displacement = object_center - frame_w_center
-    pixel_fraction = pixel_displacement/(frame_width/2.0))
+    pixel_fraction = pixel_displacement/(frame_width/2.0)
     degree_displacement = (h_fov/2) * pixel_fraction
     desired_yaw = current_yaw + degree_displacement
 

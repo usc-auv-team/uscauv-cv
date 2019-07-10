@@ -33,10 +33,14 @@ def simulation():
     ymin = 20
     ymax = 50
     try:
-        while(True):
+        while True:
             sent_str = "{" + "\"xmin\":" + str(xmin) + ", \"xmax\":" + str(xmax) + ", \"ymin\":" + str(ymin) + ", \"ymax\":" + str(ymax) + "}"
             pub.publish(sent_str);
     except KeyboardInterrupt:
-        print("Exiting")
+        pass
+
 if __name__=='__main__':
-    simulation()
+    try:
+        simulation()
+    except KeyboardInterrupt:
+        pass

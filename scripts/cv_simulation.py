@@ -30,8 +30,8 @@ def simulation():
 
     xmin = 100
     xmax = 150
-    xmin = 20
-    xmax = 50
+    ymin = 20
+    ymax = 50
 
     while(True):
 

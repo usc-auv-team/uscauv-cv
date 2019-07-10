@@ -7,7 +7,7 @@ import numpy as np
 import os
 import sys
 import tensorflow as tf
-import timeit
+import time
 
 import cv2
 
@@ -28,14 +28,23 @@ def simulation():
     # Not sure if I need seq_if but if I do, I want to be 42
     seq_id = 42
 
-    xmin = 200
-    xmax = 300
+    frame_width = 640
+    direction = 1
+
+    xmin = 0
+    xmax = 0
     ymin = 20
     ymax = 50
     try:
         while True:
+
             sent_str = "{" + "\"xmin\":" + str(xmin) + ", \"xmax\":" + str(xmax) + ", \"ymin\":" + str(ymin) + ", \"ymax\":" + str(ymax) + "}"
-            pub.publish(sent_str);
+            pub.publish(sent_str)
+            xmin = xmin + direction
+            xmax = xmax + direction
+            if(xmin == frame_width || xmax == frame_width):
+                direction = direction * -1
+            time.sleep(2)
     except KeyboardInterrupt:
         pass
 

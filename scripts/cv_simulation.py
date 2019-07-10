@@ -21,6 +21,7 @@ from std_msgs.msg import String
 
 def simulation():
     # Setup the phublisher
+    refresh_rate = 10
     pub = rospy.Publisher('cv_detection', String, queue_size=10)
     rospy.init_node('talker', anonymous = True)
     rate = rospy.Rate(refresh_rate) #10hz rate, change if needed

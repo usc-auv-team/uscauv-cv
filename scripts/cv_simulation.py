@@ -3,24 +3,23 @@
 USCAUV CV Simulation
 Provides simulated CV data over the same pathway that cv_inference does
 """
-import numpy as np
-import os
-import sys
-import tensorflow as tf
+import sys, signal
 import time
 
-import cv2
-
-from collections import defaultdict
-from io import StringIO
-from PIL import Image
+def signal_handler(signal, frame):
+    print("\nExiting program.")
+    sys.exit(0)
 
 import rospy
 from std_msgs.msg import String
 
 
 def simulation():
-    # Setup the phublisher
+    
+    #setting up signal handler to exit with Ctrl-C
+    signal.signal(signal.SIGINT, signal_handler)
+
+    # Setup the publisher
     refresh_rate = 10
     pub = rospy.Publisher('cv_detection', String, queue_size=10)
     rospy.init_node('talker', anonymous = True)
@@ -35,21 +34,15 @@ def simulation():
     xmax = 0
     ymin = 20
     ymax = 50
-    try:
-        while True:
-
-            sent_str = "{" + "\"xmin\":" + str(xmin) + ", \"xmax\":" + str(xmax) + ", \"ymin\":" + str(ymin) + ", \"ymax\":" + str(ymax) + "}"
-            pub.publish(sent_str)
-            xmin = xmin + direction
-            xmax = xmax + direction
-            if(xmin == frame_width || xmax == frame_width):
-                direction = direction * -1
-            time.sleep(2)
-    except KeyboardInterrupt:
-        pass
-
+    
+    while True:
+        sent_str = "{" + "\"xmin\":" + str(xmin) + ", \"xmax\":" + str(xmax) + ", \"ymin\":" + str(ymin) + ", \"ymax\":" + str(ymax) + "}"
+        pub.publish(sent_str)
+        xmin = xmin + direction
+        xmax = xmax + direction
+        if(xmin == frame_width or xmax == frame_width):
+            direction = direction * -1
+        time.sleep(1)
+      
 if __name__=='__main__':
-    try:
         simulation()
-    except KeyboardInterrupt:
-        pass

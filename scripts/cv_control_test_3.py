@@ -30,7 +30,7 @@ v_fov = 64 #degrees
 def callback(data):
    rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
    try:
-        global desired_yaw, current_yaw, current_distance, frame_width, frame_height, default_power
+        global frame_width, frame_height, default_power
         json_data = json.loads(data.data)
         xmin = json_data['xmin']
         print("got xmin from json: " + str(xmin))
@@ -44,31 +44,18 @@ def callback(data):
         object_center = (xmax+xmin)/2
         # calculate desired yaw
         # degree_displacement = calc_angle(object_center)
+        current_yaw = ru.get_imuyaw()
         desired_yaw = ru.calc_desired_yaw(object_center, current_yaw, frame_width, frame_height, h_fov)
-        motors_client(desired_yaw, default_power)
+        ru.motors_client(desired_yaw, default_power)
    except KeyboardInterrupt:
         set_disabled()
-
-def get_imuangle(data):
-    """ This is where we try to get the angle from ngimu/euler
-    The problem is that we need to test this with the sub
-    This is the cpp declaration of the message published for euler
-    typedef struct {
-        OscTimeTag timestamp;
-        float roll;
-        float pitch;
-        float yaw;
-    } NgimuEuler;
-    """
-    global current_yaw
-    current_yaw = data.vector.z
 
 
 def cv_controls_test():
     try:
         rospy.init_node('cv_controls_test',anonymous = True)
         rospy.Subscriber("cv_detection", String, callback)
-        rospy.Subscriber('ngimu/euler', Vector3Stamped, get_imuangle)
+        #rospy.Subscriber('ngimu/euler', Vector3Stamped, get_imuangle)
         rospy.spin()
     except rospy.ServiceException, e:
         print "Service call failed: %s"%e

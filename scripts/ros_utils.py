@@ -1,13 +1,17 @@
-# from decimal import *
+#!/usr/bin/env python
+import rospy
+from motion_controller.srv import * 
+from geometry_msgs.msg import Vector3Stamped
+from std_msgs.msg import String
 
 def motors_client(angle, power):
-    # print("Before SetEnabled")
+    print("Before SetEnabled")
     rospy.wait_for_service('motion_controller/SetEnabled')
-    # print("After SetEnabled, before Set ForwardsPower")
+    print("After SetEnabled, before Set ForwardsPower")
     rospy.wait_for_service('motion_controller/SetForwardsPower')
-    # print("After SetFowardsPower, before SetYawAngle")
+    print("After SetFowardsPower, before SetYawAngle")
     rospy.wait_for_service('motion_controller/SetYawAngle')
-    # print("After SetYawAngle")
+    print("After SetYawAngle")
 
     try:
         set_enabled = rospy.ServiceProxy('motion_controller/SetEnabled', SetEnabled)
@@ -21,18 +25,11 @@ def motors_client(angle, power):
         print "Service call failed: %s"%e
 
 
-def get_imuangle(data):
-    """ This is where we try to get the angle from ngimu/euler
-    The problem is that we need to test this with the sub
-    This is the cpp declaration of the message published for euler
-    typedef struct {
-        OscTimeTag timestamp;
-        float roll;
-        float pitch;
-        float yaw;
-    } NgimuEuler;
-    """
-    return data.vector.y
+def get_imuyaw():
+    #Return yaw/z value from the imu
+    data = rospy.wait_for_message('ngimu/euler', Vector3Stamped)
+    current_yaw = data.vector.z
+    return current_yaw
 
 
 def calc_desired_yaw(object_center, current_yaw, frame_width, frame_height, h_fov):

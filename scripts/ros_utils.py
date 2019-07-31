@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#/usr/bin/env python
 import rospy
 from motion_controller.srv import *
 from geometry_msgs.msg import Vector3Stamped
@@ -20,12 +20,14 @@ def motors_client(angle, power):
         set_yaw_angle = rospy.ServiceProxy('motion_controller/SetYawAngle', SetYawAngle)
         m_power = set_forwards_power(power)
         m_angle = set_yaw_angle(angle)
-        # m_enable = set_enabled(True)
+        m_enable = set_enabled(True)
 
     except rospy.ServiceException, e:
         print "Service call failed: %s"%e
 
 def forwards(seconds, power):
+    zero_motors()
+    set_rollpitch(0, 20)
     print("Before Waiting for SetEnabled")
     rospy.wait_for_service('motion_controller/SetEnabled')
     print("After Waiting for SetEnabled")
@@ -41,7 +43,7 @@ def forwards(seconds, power):
         print("ForwardsPower set to " + str(power))
         m_enable = set_enabled(True)
         print("Motors enabled")
-        sleep(seconds)
+        time.sleep(seconds)
     except rospy.ServiceException, e:
         print "Service call failed: %s"%e
     except KeyboardInterrupt:
@@ -60,6 +62,7 @@ def forwards(seconds, power):
         print("After zeroing forwards power")
     except rospy.ServiceException, e:
         print "Service call failed: %s"%e
+    set_disabled()    
 
 def set_disabled():
     print("Waiting for SetEnabled")
@@ -74,6 +77,26 @@ def set_disabled():
 
     return
 
+def zero_motors():
+    rospy.wait_for_service('motion_controller/Zero')
+    print("After waiting for zero")
+    
+    try:
+    	zero = rospy.ServiceProxy('motion_controller/Zero', Zero)
+        set_zero = zero()
+    except rospy.ServiceException, e:
+        print "Service call failed: %s"%e
+
+def set_rollpitch(roll, pitch):
+    rospy.wait_for_service('motion_controller/SetRollPitchAngles')
+    
+    try:
+    	roll_pitch = rospy.ServiceProxy('motion_controller/SetRollPitchAngles', SetRollPitchAngles)
+        set_rollpitch = roll_pitch(roll, pitch)
+    except rospy.ServiceException, e:
+        print "Service call failed: %s"%e
+    
+    
 
 def get_imuyaw():
     #Return yaw/z value from the imu

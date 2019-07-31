@@ -10,7 +10,7 @@ def motors_client(angle, power):
     rospy.wait_for_service('motion_controller/SetEnabled')
     print("After SetEnabled, before Set ForwardsPower")
     rospy.wait_for_service('motion_controller/SetForwardsPower')
-    print("After SetFowardsPower, before SetYawAngle")
+    print("After SetForwardsPower, before SetYawAngle")
     rospy.wait_for_service('motion_controller/SetYawAngle')
     print("After SetYawAngle")
 
@@ -30,8 +30,8 @@ def forwards(seconds, power):
     rospy.wait_for_service('motion_controller/SetEnabled')
     print("After Waiting for SetEnabled")
     print("Before Waiting for SetForwardsPower")
-    rospy.wait_for_service('motion_controller/SetFowardsPower')
-    print("After Waiting for SetFowardsPower")
+    rospy.wait_for_service('motion_controller/SetForwardsPower')
+    print("After Waiting for SetForwardsPower")
 
     try:
         set_enabled = rospy.ServiceProxy('motion_controller/SetEnabled', SetEnabled)
@@ -49,7 +49,7 @@ def forwards(seconds, power):
 
     print("Before Waiting for second set of commands")
     rospy.wait_for_service('motion_controller/SetEnabled')
-    rospy.wait_for_service('motion_controller/SetFowardsPower')
+    rospy.wait_for_service('motion_controller/SetForwardsPower')
     print("After Waiting for second set of commands")
     try:
         print("before zeroing forwards power")

@@ -26,25 +26,40 @@ def motors_client(angle, power):
         print "Service call failed: %s"%e
 
 def forwards(seconds, power):
+    print("Before Waiting for SetEnabled")
     rospy.wait_for_service('motion_controller/SetEnabled')
+    print("After Waiting for SetEnabled")
+    print("Before Waiting for SetForwardsPower")
     rospy.wait_for_service('motion_controller/SetFowardsPower')
+    print("After Waiting for SetFowardsPower")
 
     try:
-        # set_enabled = rospy.ServiceProxy('motion_controller/SetEnabled', SetEnabled)
+        set_enabled = rospy.ServiceProxy('motion_controller/SetEnabled', SetEnabled)
         set_forwards_power = rospy.ServiceProxy('motion_controller/SetForwardsPower', SetForwardsPower)
         # set_yaw_angle = rospy.ServiceProxy('motion_controller/SetYawAngle', SetYawAngle)
         m_power = set_forwards_power(power)
+        print("ForwardsPower set to " + str(power))
+        m_enable = set_enabled(True)
+        print("Motors enabled")
         sleep(seconds)
+    except rospy.ServiceException, e:
+        print "Service call failed: %s"%e
     except KeyboardInterrupt:
         set_disabled()
 
+    print("Before Waiting for second set of commands")
     rospy.wait_for_service('motion_controller/SetEnabled')
     rospy.wait_for_service('motion_controller/SetFowardsPower')
-        try:
-            # set_enabled = rospy.ServiceProxy('motion_controller/SetEnabled', SetEnabled)
-            set_forwards_power = rospy.ServiceProxy('motion_controller/SetForwardsPower', SetForwardsPower)
-            # set_yaw_angle = rospy.ServiceProxy('motion_controller/SetYawAngle', SetYawAngle)
-            m_power = set_forwards_power(0)
+    print("After Waiting for second set of commands")
+    try:
+        print("before zeroing forwards power")
+        # set_enabled = rospy.ServiceProxy('motion_controller/SetEnabled', SetEnabled)
+        set_forwards_power = rospy.ServiceProxy('motion_controller/SetForwardsPower', SetForwardsPower)
+        # set_yaw_angle = rospy.ServiceProxy('motion_controller/SetYawAngle', SetYawAngle)
+        m_power = set_forwards_power(0)
+        print("After zeroing forwards power")
+    except rospy.ServiceException, e:
+        print "Service call failed: %s"%e
 
 def set_disabled():
     print("Waiting for SetEnabled")
@@ -54,10 +69,10 @@ def set_disabled():
     try:
         set_enabled = rospy.ServiceProxy('motion_controller/SetEnabled', SetEnabled)
         enable = set_enabled(False)
-        return
-
     except rospy.ServiceException, e:
         print "Service call failed: %s"%e
+
+    return
 
 
 def get_imuyaw():

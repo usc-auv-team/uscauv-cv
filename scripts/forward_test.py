@@ -13,10 +13,14 @@ import ros_utils as ru
 def main():
     try:
         rospy.init_node('forwards_test',anonymous = True)
-        ru.forwards(5, 0.5)
+        print("Before calling forwards")
+        ru.forwards(5 , 1)
+        # ru.motors_client(0, 1)
+        print("After calling forwards")
     except rospy.ServiceException, e:
         print "Service call failed: %s"%e
         print("Exiting")
+    return
 
 if __name__ == '__main__':
     main()

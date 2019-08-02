@@ -25,9 +25,11 @@ def motors_client(angle, power):
     except rospy.ServiceException, e:
         print "Service call failed: %s"%e
 
-def forwards(seconds, power):
+def forwards(seconds, power, wait, roll, pitch):
+    
+    time.sleep(wait)
     zero_motors()
-    set_rollpitch(0, 20)
+    set_rollpitch(roll, pitch)
     print("Before Waiting for SetEnabled")
     rospy.wait_for_service('motion_controller/SetEnabled')
     print("After Waiting for SetEnabled")
@@ -96,7 +98,18 @@ def set_rollpitch(roll, pitch):
     except rospy.ServiceException, e:
         print "Service call failed: %s"%e
     
-    
+def set_yaw(yaw):
+    print("After SetForwardsPower, before SetYawAngle")
+    rospy.wait_for_service('motion_controller/SetYawAngle')
+    print("After SetYawAngle")
+
+    try:
+        set_yaw_angle = rospy.ServiceProxy('motion_controller/SetYawAngle', SetYawAngle)
+        m_angle = set_yaw_angle(yaw)
+        
+    except rospy.ServiceException, e:
+        print "Service call failed: %s"%e
+     
 
 def get_imuyaw():
     #Return yaw/z value from the imu
